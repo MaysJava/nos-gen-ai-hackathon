@@ -1,4 +1,4 @@
-## Team Untrace
+## MK Team
 The *-Files: Intelligent Document Anonymisation
 
 JunctionX Lisbon 2026 | NOS Generative AI Challenge
