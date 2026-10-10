@@ -16,7 +16,7 @@ IMPORTANT FORMATTING RULES:
 - Carefully check that no personal identifiers remain visible.
 - Do not anonymise ordinary medical terminology merely because it
   appears in a medical document.
-  
+
   CRITICAL EXCEPTIONS:
 - Keep the document title unchanged.
 - Keep the admission date unchanged.

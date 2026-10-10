@@ -1,5 +1,9 @@
+from dotenv import load_dotenv
+import requests
+import os
 from pathlib import Path
 import fitz
+import time
 
 # Find the main project folder
 PROJECT_DIR = Path(__file__).resolve().parent.parent
@@ -16,10 +20,6 @@ text = "\n".join(pages)
 # Display the extracted text
 print(text)
 
-
-import os
-import requests
-from dotenv import load_dotenv
 
 # Load our secret API key from the .env file
 load_dotenv(PROJECT_DIR / ".env")
@@ -55,7 +55,7 @@ IMPORTANT FORMATTING RULES:
 - Carefully check that no personal identifiers remain visible.
 - Do not anonymise ordinary medical terminology merely because it
   appears in a medical document.
-  
+
   CRITICAL EXCEPTIONS:
 - Keep the document title unchanged.
 - Keep the admission date unchanged.
@@ -77,30 +77,51 @@ body = {
         }
     ],
     "generationConfig": {
-    "temperature": 0.0,
-    "thinkingConfig": {
-        "thinkingBudget": 0
-    }
-},
+        "temperature": 0.0,
+        "thinkingConfig": {
+            "thinkingBudget": 0
+        }
+    },
 }
 
 # Send our request to Gemini
-response = requests.post(
-    api_url,
-    headers={"x-goog-api-key": api_key},
-    json=body,
-    timeout=180,
-)
+# Retry when Google's servers are temporarily unavailable
+for attempt in range(3):
+    try:
+        response = requests.post(
+            api_url,
+            headers={"x-goog-api-key": api_key},
+            json=body,
+            timeout=180,
+        )
 
-if response.status_code != 200:
-    print("Google's error:", response.text)
-response.raise_for_status()
+        if response.status_code in (429, 500, 502, 503, 504):
+            if attempt < 2:
+                print("Gemini is busy. Waiting before retrying...")
+                time.sleep(5 * (attempt + 1))
+                continue
 
+        if response.status_code != 200:
+            print("Google's error:", response.text)
+
+        response.raise_for_status()
+        break
+
+    except requests.exceptions.RequestException as error:
+        if attempt == 2:
+            raise
+        print(f"Connection problem: {error}. Retrying...")
+        time.sleep(5 * (attempt + 1))
 
 # Display Gemini's answer
 result = response.json()
 # Get Gemini's anonymised document
 anonymised_text = result["candidates"][0]["content"]["parts"][0]["text"]
+# Remove empty lines while preserving the remaining text
+anonymised_text = "\n".join(
+    line for line in anonymised_text.splitlines()
+    if line.strip()
+)
 
 # Find our submission folder
 submission_dir = PROJECT_DIR / "submission"
