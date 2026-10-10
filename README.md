@@ -1,55 +1,263 @@
-# NOS Gen-AI Hackathon
+## Team Untrace
+The *-Files: Intelligent Document Anonymisation
 
-Welcome to the official repository for the NOS Gen-AI Hackathon, part of the SCAILE initiative! In this repository, you will find essential resources including the official hackathon rules, code snippets, and examples designed to facilitate your development process. Additionally, we provide a baseline structure to guide you in addressing the proposed challenge effectively.
+JunctionX Lisbon 2026 | NOS Generative AI Challenge
 
-## 0. Problem Statement and Evaluation Criteria
+Protecting identities. Preserving information.
 
-For a complete description of the problem statement and the detailed evaluation criteria, refer to this [document](tutorials/problem_and_eval.md).
+## Overview
 
-The document to be anonymized is located at [`raw_data/document_to_anonymize.pdf`](raw_data/document_to_anonymize.pdf).
+Team Untrace is an AI-powered document anonymisation solution developed for the NOS challenge at JunctionX Lisbon 2026.
 
-## 1. Prerequisites
-Before participating in the hackathon, please ensure that you meet the following prerequisites. Having the needed accounts and accesses will help streamline your development process and facilitate the use of necessary tools and APIs.
+Our system uses Google Gemini, Python, and PyMuPDF to identify and mask personally identifiable information in a medical document while preserving its structure, readability, and clinical context.
 
-### 1.1. GitHub Account
+Instead of simply deleting sensitive information or replacing entire sentences, our solution uses context-aware prompt engineering to replace each sensitive word with a single asterisk (*).
 
-Make sure you have an active GitHub account at [Create a GitHub Account](https://github.com/signup)
+## Our goal is simple:
+Make sensitive documents safer to share without losing the information that makes them useful.
 
-### 1.2. Google Account
+## The Challenge
+Organisations often work with documents containing personal, financial, medical, and other sensitive information.
 
-You'll need an active Google account to access Google AI tools at [Create a Google Account](https://accounts.google.com/signup)
+Traditional anonymisation approaches based on fixed patterns can identify obvious information such as email addresses or telephone numbers, but they may struggle with contextual information such as names, relationships, and other identifying details.
 
-### 1.3. Set Up Your Google API Key
+The NOS challenge asks teams to develop an LLM-based solution that:
+- Detects sensitive and personally identifiable information.
+- Replaces sensitive words and numbers with *.
+- Preserves non-sensitive information and document meaning.
+- Maintains the original document's structure and formatting, with empty lines removed.
+- Produces an anonymised output and the exact prompt used to generate it.
 
-To generate your API key:
+## Our Solution
+Team Untrace combines LLM-based anonymisation with automated validation.
 
-a. Go to [Google AI Studio](https://aistudio.google.com/) and log in with your Google account.  
-b. Click on the **“Get API Key”** button.  
-c. Select **“Create API key”** (or **“Criar chave de API”** if in Portuguese).  
-d. A window will open where you’ll create an API key under a new project.  
-e. **Important:** Save the generated API key in a safe place — you'll need it later!
+Our approach has five stages:
+1. Document extraction
+The system reads the original PDF using PyMuPDF and extracts its text.
 
-## 2. Setup
-In this section, we'll walk you through the essential setup steps needed to get started with your project. Follow these instructions carefully!
+2. Context-aware prompt engineering
+A carefully designed prompt instructs Gemini to distinguish sensitive identifiers from information that should remain visible, while preserving the original text structure.
 
-### 2.1. Git tutorial
+3. AI-powered anonymisation
+Google Gemini processes the extracted document and replaces identified sensitive words with asterisks *.
 
-If you're new to Git, it’s important to understand how to manage your code effectively. To help you get started, we have provided a Git tutorial at [Git Tutorial](tutorials/git_tutorial.md). This tutorial will guide you through the fundamental concepts and commands you'll need to commit your changes and collaborate with your team.
+4. Output formatting
+The program removes empty lines while preserving the order and content of non-empty lines.
 
-## 3. Utils
+5. Automated validation
+A separate Python checker examines the generated output for common anonymisation and formatting problems.
 
-This section contains helpful resources and tools to support your work.
+## Technology Stack
+Python: Main programming language
 
-### 3.1. Getting Started with Gemini API
+Google Gemini API: Context-aware sensitive information detection and masking.
 
-If you're looking for **detailed steps**, including how to obtain an API key and example usage, please refer to the full tutorial at [Gemini 2.0 Tutorial](tutorials/gemini_tutorial.md)
+PyMuPDF: PDF text extraction
 
-### 3.2. Document Conversion Methods
+Requests: Communication with the Gemini API
 
-Converting PDF documents to text can be essential for leveraging existing content in your project. There are methods and tools available for this conversion, which you can explore in detail in the [PDF to Text Guide](tutorials/pdf__to__txt.ipynb).
+python-dotenv: Loading the API key from a local environment file
 
+flake8: Python code-quality checking
 
-## 4. Submission Guidelines
+Git and GitHub: Version control, collaboration, and submission
 
-In this section, we will outline the expectations for project submission. Understanding these guidelines is crucial to ensure your work is evaluated correctly. There are specific methods and criteria for submission, which you should follow closely to enhance your chances of success. Make sure to read through the following points carefully.
-For more detailed information on the submission process and what is expected, please refer to the [Submission Process Guide](submission/README.md).
+## How It Works
+Original Medical PDF
+        |
+        v
+  PyMuPDF Extraction
+        |
+        v
+  Structured AI Prompt
+        |
+        v
+   Google Gemini API
+        |
+        v
+  Anonymised Response
+        |
+        v
+  Empty-Line Removal
+        |
+        v
+  submission.txt
+        |
+        v
+  Validation Checker
+
+## Example
+    Original:
+    Nome: Maria Conceição Oliveira Santos
+    Telefone: +351 912 345 678
+    Email: maria.santos@emailpessoal.pt
+
+    Anonymised:
+    Nome: * * * *
+    Telefone: * * * *
+    Email: *
+
+The model masks sensitive words while retaining labels, punctuation, and the surrounding document structure.
+ 
+## Project Structure
+nos-gen-ai-hackathon/
+│
+├── raw_data/
+│   └── document_to_anonymize.pdf
+│
+├── submission/
+│   ├── anonymize.py
+│   ├── check_output.py
+│   ├── prompt.txt
+│   └── submission.txt
+│
+├── tutorials/
+│
+├── .gitignore
+└── README.md
+
+## Key files
+    - anonymize.py — extracts the PDF text, builds the prompt, calls Gemini, and saves the results.
+    - check_output.py — validates the generated output.
+    - prompt.txt — stores the prompt sent to the model.
+    submission.txt — contains the anonymised text evaluated by the NOS challenge.
+    - document_to_anonymize.pdf — original challenge document.
+ 
+## Getting Started
+Prerequisites
+You will need:
+    - Python 3 installed.
+    - A Google Gemini API key.
+    - Git, if cloning the repository.
+    - An internet connection to access the Gemini API.
+
+1. Clone the repository
+git clone https://github.com/MaysJava/nos-gen-ai-hackathon.git
+cd nos-gen-ai-hackathon
+git switch team-untrace
+
+2. Create a virtual environment
+On macOS or Linux:
+python3 -m venv .venv
+source .venv/bin/activate
+
+On Windows:
+python -m venv .venv
+.venv\Scripts\activate
+
+3. Install dependencies
+python -m pip install pymupdf requests python-dotenv flake8
+
+4. Configure the API key
+Create a file called .env in the project root:
+GEMINI_API_KEY=your_api_key_here
+Replace your_api_key_here with your own Gemini API key.
+
+Security: Never upload your .env file or share your API key publicly. The environment file should remain excluded from Git using .gitignore.
+
+5. Run the anonymisation
+From the project root:
+python submission/anonymize.py
+The program reads the source PDF, sends the anonymisation prompt to Gemini, and saves the resulting files under submission/.
+
+6. Validate the output
+python submission/check_output.py
+
+7. Check code quality
+python -m flake8 submission/anonymize.py submission/check_output.py
+No terminal output indicates that flake8 found no style violations in these files.
+
+## Validation and Quality Assurance
+We developed a dedicated validation script rather than relying solely on the model's response.
+Our checker currently verifies:
+    - The anonymised output is not empty.
+    - Required document headings remain present.
+    - Obvious email addresses are not exposed.
+    - Common Portuguese telephone-number patterns are not exposed.
+    - Obvious credit-card patterns are not exposed.
+    - Selected non-sensitive fields remain unchanged.
+    - Empty lines have been removed.
+    - The original and anonymised documents contain the same number of non-empty lines.
+    - Lines containing changed words are flagged for manual review.
+
+## Current test results
+    - During local testing, the system successfully:
+    - Produced an anonymised document using Gemini.
+    - Preserved 60 non-empty lines from the source document.
+    - Removed empty lines.
+    - Preserved important headings, the admission date, and the document reference.
+    - Passed the implemented pattern-based validation checks.
+    - Passed flake8 checks.
+
+Validation limitations: These checks do not guarantee that every sensitive identifier has been masked correctly. Changed-word review flags may include correct anonymisations.
+ 
+## Reliability and Error Handling
+External AI APIs may occasionally become unavailable due to temporary server demand or connection problems.
+
+To improve reliability, the system includes an automatic retry mechanism for temporary API failures, including rate-limit and server-side errors.
+
+The implementation retries eligible failures up to three attempts, with short delays between attempts.
+
+This helps the program recover from temporary service interruptions without requiring immediate manual intervention.
+
+## Engineering Decisions
+Why an LLM instead of only regular expressions?
+
+    Regular expressions are useful for recognising fixed patterns such as email addresses and telephone numbers.
+
+    However, sensitive information is not always identifiable through its format alone.
+
+    An LLM can consider the surrounding text and identify contextual information, such as a person's name in a medical narrative.
+
+    We therefore use Gemini for anonymisation and pattern-based checks as an additional validation layer.
+
+Why preserve medical context?
+    Removing entire sentences or masking every medical term can make a document difficult to understand.
+
+    Our prompt aims to preserve the clinical meaning while anonymising identifying details.
+
+Why save the exact prompt?
+    Prompt engineering is a core component of the NOS challenge.
+
+    Saving the prompt provides transparency, reproducibility, and a way to evaluate how the model was instructed to perform anonymisation.
+
+Why use a separate validation script?
+    Separating generation from validation makes the solution easier to test, explain, maintain, and improve.
+
+    It also allows us to detect formatting issues without repeatedly calling the Gemini API.
+
+## Limitations and Future Improvements
+This is a hackathon prototype, not a certified production-grade medical privacy solution.
+
+Potential future improvements include:
+    - More advanced detection of indirect identifiers.
+    - Automated comparison of preserved non-sensitive content.
+    - Additional tests for over-anonymisation and missed identifiers.
+    - Support for more document formats and languages.
+    - A human review interface for ambiguous cases.
+    - More comprehensive handling of API availability and rate limits.
+ 
+## Team Collaboration
+MK team was developed collaboratively during JunctionX Lisbon 2026.
+
+Our workflow uses GitHub branches, commits, and integration of team contributions to keep the project organised and maintain a transparent development history.
+
+The repository history documents our development process, including improvements to the anonymisation pipeline, validation, reliability, and documentation.
+
+## Hackathon Submission
+Challenge: The -Files: Call for Anonymizing Prompts
+Organiser: NOS
+Event: JunctionX Lisbon 2026
+Team: MK
+
+The challenge submission includes:
+    - submission/submission.txt
+    - submission/prompt.txt
+    - submission/anonymize.py
+    - Supporting materials include the validation script and project documentation.
+
+The final submission is made through a pull request to the original NOS hackathon repository and registered on the JunctionX platform.
+ 
+## MK Team
+Protecting identities. Preserving information.
+Because useful information shouldn't have to come at the cost of privacy.
