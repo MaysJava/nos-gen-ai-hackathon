@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Untrace | Privacy Dashboard</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #0b1020;
+      color: #eef2ff;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+    }
+    header {
+      padding: 24px 7%;
+      border-bottom: 1px solid #28324c;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo { font-size: 23px; font-weight: bold; }
+    .logo span { color: #6ee7b7; }
+    .tag {
+      color: #6ee7b7;
+      background: #153c36;
+      border-radius: 30px;
+      padding: 7px 14px;
+      font-size: 12px;
+    }
+    main { max-width: 1150px; margin: auto; padding: 45px 22px; }
+    h1 { font-size: clamp(30px, 5vw, 52px); margin-bottom: 8px; }
+    h2 { margin-top: 0; font-size: 21px; }
+    .subtitle { color: #aab6cf; max-width: 650px; }
+    .accent { color: #6ee7b7; }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin: 35px 0;
+    }
+    .card, .panel {
+      background: #151d32;
+      border: 1px solid #2c3955;
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .metric { font-size: 38px; font-weight: bold; color: #6ee7b7; }
+    .label { color: #aab6cf; font-size: 14px; }
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 20px;
+    }
+    .document {
+      background: #0c1426;
+      border: 1px solid #34415e;
+      border-radius: 12px;
+      padding: 20px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      min-height: 220px;
+      font-size: 13px;
+    }
+    .private { color: #fca5a5; }
+    .masked { color: #6ee7b7; font-weight: bold; }
+    .note { color: #aab6cf; font-size: 13px; }
+    button {
+      background: #6ee7b7;
+      border: none;
+      color: #08251e;
+      font-weight: bold;
+      padding: 12px 20px;
+      border-radius: 9px;
+      cursor: pointer;
+      margin: 12px 0;
+    }
+    button:hover { background: #a7f3d0; }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .step {
+      background: #151d32;
+      border: 1px solid #2c3955;
+      border-radius: 12px;
+      padding: 18px;
+    }
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: #aab6cf;
+      border-top: 1px solid #28324c;
+    }
+    @media (max-width: 700px) {
+      .metrics, .comparison, .steps { grid-template-columns: 1fr; }
+      header { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">UN<span>TRACE</span> 🔐</div>
+    <div class="tag">NOS Hackathon 2026</div>
+  </header>
+
+  <main>
+    <h1>Protect identities.<br><span class="accent">Preserve information.</span></h1>
+    <p class="subtitle">
+      An AI-powered document anonymisation prototype using
+      Google Gemini, Python and automated validation.
+    </p>
+
+    <section class="metrics">
+      <div class="card">
+        <div class="metric">14</div>
+        <div class="label">Local validation checks passed</div>
+      </div>
+      <div class="card">
+        <div class="metric">60 / 60</div>
+        <div class="label">Non-empty document lines preserved</div>
+      </div>
+      <div class="card">
+        <div class="metric">24</div>
+        <div class="label">Lines flagged for manual review</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Before & After Anonymisation</h2>
+      <p class="note">
+  The original medical document is in Portuguese.
+  Our AI preserves its language and clinical meaning
+  while masking sensitive personal information.
+</p>
+      <p class="subtitle">
+        Explore how sensitive information is replaced with asterisks
+        while retaining the document's structure.
+      </p>
+      <button id="toggle">Show anonymised result</button>
+
+      <div class="comparison">
+        <div>
+          <h3>Original document</h3>
+          <div class="document">Nome: <span class="private">Maria Conceição Oliveira Santos</span>
+Telefone: <span class="private">+351 912 345 678</span>
+Email: <span class="private">maria.santos@emailpessoal.pt</span>
+Sexo: Feminino
+Referência: ADM-2025-04-15-089</div>
+        </div>
+        <div>
+          <h3>AI anonymised result</h3>
+          <div class="document" id="result">Click the button to reveal the anonymised example.</div>
+        </div>
+      </div>
+      <p class="note">
+        Demo based on the fictional NOS challenge document.
+        Results are illustrative, not a live API response.
+        Validation checks do not guarantee complete anonymisation.
+      </p>
+    </section>
+
+    <section style="margin-top: 30px">
+      <h2>How Team Untrace Works</h2>
+      <div class="steps">
+        <div class="step"><strong>01 · Extract</strong><p class="note">Read PDF text with PyMuPDF.</p></div>
+        <div class="step"><strong>02 · Detect</strong><p class="note">Use Gemini to identify sensitive information.</p></div>
+        <div class="step"><strong>03 · Mask</strong><p class="note">Replace sensitive words with asterisks.</p></div>
+        <div class="step"><strong>04 · Validate</strong><p class="note">Check formatting and common privacy patterns.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Team Untrace · JunctionX Lisbon 2026 · NOS GenAI Challenge
+  </footer>
+
+  <script>
+    const button = document.getElementById("toggle");
+    const result = document.getElementById("result");
+    let visible = false;
+
+    const anonymised = `Nome: * * * *
+Telefone: * * * *
+Email: *
+Sexo: Feminino
+Referência: ADM-2025-04-15-089`;
+
+    button.addEventListener("click", () => {
+      visible = !visible;
+      result.textContent = visible
+        ? anonymised
+        : "Click the button to reveal the anonymised example.";
+      button.textContent = visible
+        ? "Hide anonymised result"
+        : "Show anonymised result";
+    });
+  </script>
+</body>
+</html>

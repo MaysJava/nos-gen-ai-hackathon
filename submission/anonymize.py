@@ -55,6 +55,10 @@ IMPORTANT FORMATTING RULES:
 - Carefully check that no personal identifiers remain visible.
 - Do not anonymise ordinary medical terminology merely because it
   appears in a medical document.
+- Anonymise religious beliefs and religious affiliation, replacing
+  each sensitive word with exactly one *.
+- Anonymise specific workplaces or institutions associated with the patient,
+  but preserve the general occupation and surrounding sentence.
 
   CRITICAL EXCEPTIONS:
 - Keep the document title unchanged.
