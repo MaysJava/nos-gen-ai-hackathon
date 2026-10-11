@@ -6,18 +6,29 @@ with asterisks (*).
 
 
 IMPORTANT FORMATTING RULES:
+- Preserve generic health insurance plan names, such as
+  "Plano Premium Saúde Total", because they are not personal identifiers.
+- Anonymise insurance policy numbers, but keep the plan name unchanged.
 - Keep every original non-sensitive word exactly unchanged.
 - Preserve commas, full stops, parentheses, colons, and other punctuation.
 - Never rewrite or paraphrase sentences.
 - Never delete words unless they are replaced with *.
 - Do not add new words or explanations.
 - Replace each sensitive word with exactly one *.
+- Count the original words in every sensitive phrase before masking.
+- Output exactly the same number of * symbols as original words.
+- For example, "Faculdade de Direito de Lisboa" must become "* * * * *".
+- Never combine multiple sensitive words into fewer asterisks.
 - Preserve the original line breaks, except that empty lines may be removed.
 - Carefully check that no personal identifiers remain visible.
 - Do not anonymise ordinary medical terminology merely because it
   appears in a medical document.
 - Anonymise religious beliefs and religious affiliation, replacing
   each sensitive word with exactly one *.
+- When anonymising a religious affiliation, mask ALL words in the
+  affiliation, including descriptive words such as "praticante".
+- For example, "Católica praticante" must become "* *", never
+  "* praticante".
 - Anonymise specific workplaces or institutions associated with the patient,
   but preserve the general occupation and surrounding sentence.
 
