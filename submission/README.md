@@ -27,7 +27,12 @@ Our solution follows five main steps:
             - submission/submission.txt — the generated anonymised document, with empty lines removed.
 
     5. Validate the result
-        A separate script, submission/check_output.py, performs automated checks to identify possible problems in the generated output.
+        The project includes two forms of automated checking:
+
+        - `check_output.py` performs the project's output-validation checks.
+        - `test_validation.py` contains unit tests that check for common formatting issues, required headings, and email or phone-number patterns.
+
+        These checks help identify potential problems, but manual review may still be needed because no automated checker can guarantee complete anonymisation.
 
 ## Technologies Used
 Python: Main programming language
@@ -59,6 +64,14 @@ To check Python code style:
 
 python -m flake8 submission/anonymize.py submission/check_output.py
 
+## Dashboard
+
+A browser-based dashboard is included at `dashboard/index.html` in the project root.
+
+The dashboard is a separate component from the anonymisation script and validation tools. See the main project README for the dashboard's location and usage instructions.
+
+The core anonymisation process can be run independently using `python submission/anonymize.py`.
+
 ## Validation Strategy
     - Our validation script checks that:
     - The anonymised document exists and is not empty.
@@ -72,6 +85,21 @@ python -m flake8 submission/anonymize.py submission/check_output.py
 During our latest local test, both the original and anonymised documents contained 60 non-empty lines, and the automated checks reported no failures.
 
 The checker also flagged 24 lines for review. These are not necessarily errors; they may include correctly anonymised content.
+
+Running the Unit Tests
+
+    From the project root, run:
+
+    Windows:
+    python -m unittest discover -s submission -p "test_validation.py" -v
+    
+
+    macOS or Linux:
+    python3 -m unittest discover -s submission -p "test_validation.py" -v
+
+    The tests read `submission/submission.txt` and check that it is not empty, required headings are present, email addresses and common Portuguese mobile phone numbers matching the test patterns are absent, and empty lines have been removed.
+
+    These unit tests complement `check_output.py` by checking a small set of expected conditions. They do not modify `anonymize.py`, `prompt.txt`, or `submission.txt`, and passing them does not guarantee that all sensitive information has been anonymised correctly.
 
 ## Reliability Improvements
 The Gemini API can occasionally return temporary errors due to high demand or service availability.

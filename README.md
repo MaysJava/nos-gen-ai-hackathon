@@ -47,6 +47,16 @@ The program removes empty lines while preserving the order and content of non-em
 5. Automated validation
 A separate Python checker examines the generated output for common anonymisation and formatting problems.
 
+## Dashboard
+
+The project includes a browser-based dashboard located at dashboard/index.html .
+
+The dashboard provides a visual interface for the project. It is separate from the core anonymisation and validation scripts.
+
+To open the dashboard, you can open dashboard/index.html in your web browser. If the dashboard requires a local server or additional services, start those according to the dashboard's implementation.
+
+The anonymisation pipeline can also be run directly from the terminal using the instructions below.
+
 ## Technology Stack
 Python: Main programming language
 
@@ -101,18 +111,20 @@ The model masks sensitive words while retaining labels, punctuation, and the sur
  
 ## Project Structure
 nos-gen-ai-hackathon/
-│
+
+nos-gen-ai-hackathon/
+├── dashboard/
+│   └── index.html
 ├── raw_data/
 │   └── document_to_anonymize.pdf
-│
 ├── submission/
 │   ├── anonymize.py
 │   ├── check_output.py
+│   ├── test_validation.py
 │   ├── prompt.txt
-│   └── submission.txt
-│
+│   ├── submission.txt
+│   └── README.md
 ├── tutorials/
-│
 ├── .gitignore
 └── README.md
 
@@ -122,7 +134,9 @@ nos-gen-ai-hackathon/
     - prompt.txt — stores the prompt sent to the model.
     submission.txt — contains the anonymised text evaluated by the NOS challenge.
     - document_to_anonymize.pdf — original challenge document.
- 
+    - dashboard/index.html — the dashboard's HTML entry point.
+    - test_validation.py — automated unit tests for basic output validation, located in the `submission/` folder.
+
 ## Getting Started
 Prerequisites
 You will need:
@@ -164,7 +178,7 @@ The program reads the source PDF, sends the anonymisation prompt to Gemini, and 
 python submission/check_output.py
 
 7. Check code quality
-python -m flake8 submission/anonymize.py submission/check_output.py
+python -m flake8 submission/anonymize.py submission/check_output.py submission/test_validation.py
 No terminal output indicates that flake8 found no style violations in these files.
 
 ## Validation and Quality Assurance
@@ -179,6 +193,30 @@ Our checker currently verifies:
     - Empty lines have been removed.
     - The original and anonymised documents contain the same number of non-empty lines.
     - Lines containing changed words are flagged for manual review.
+
+## Automated Tests
+
+The project includes automated unit tests in submission/test_validation.py. These tests use Python's built-in 'unittest' framework to check the generated anonymised output.
+
+The tests currently check that:
+- The output file is not empty.
+- Required document headings are preserved.
+- Email addresses matching the test pattern are not present.
+- Common Portuguese mobile phone-number patterns are not present.
+- Empty lines have been removed.
+
+Run the tests from the project root:
+
+Windows:
+python -m unittest discover -s submission -p "test_validation.py" -v
+
+macOS or Linux:
+python3 -m unittest discover -s submission -p "test_validation.py" -v
+
+A successful run ends with `OK`. If a test fails, inspect the failure message to identify which check needs attention.
+
+These tests complement `check_output.py`; they do not guarantee that all sensitive information has been detected or anonymised correctly.
+
 
 ## Current test results
     - During local testing, the system successfully:
